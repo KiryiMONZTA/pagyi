@@ -13,6 +13,7 @@
     "require": {
         "php": "^7.4",
         "kiryi/pathyi": "^1.0",
+        "kiryi/inyi": "^1.0",
         "kiryi/viewyi": "^1.1",
         "erusev/parsedown": "^1.7"
     },
