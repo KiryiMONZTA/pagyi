@@ -3,15 +3,19 @@
 namespace Kiryi\Pagyi\Helper;
 
 use Kiryi\Pathyi\Formatter as Pathyi;
+use Kiryi\Inyi\Reader as Inyi;
 
 class Initializer
 {
     const ROOTDIR = __DIR__ . '/../../../../../';
+    const CONFIGFILE_SECTION_PAGYI = 'pagyi::';
+    const CONFIGFILE_SECTION_VIEWYI = 'viewyi::';
+    const CONFIGFILE_PARAMS = ['baseUrl', 'imagePath', 'imageDirectory'];
 
     private string $baseUrl = '';
     private string $imgPath = '';
     private string $imgDir = '';
-    private string $configFilepath = '';
+    private string $buildConfigFilepath = '';
     private string $textDir = '';
 
     private static $instance = null;
@@ -31,24 +35,66 @@ class Initializer
         return self::$instance;
     }
 
+    public function initByConfigFile(?string $filepath): void
+    {
+        if ($filepath !== null) {
+            $inyi = new Inyi($filepath);
+            $params = [];
+    
+            foreach ($this::CONFIGFILE_PARAMS as $param) {
+                try {
+                    $params[$param] = $inyi->get($this::CONFIGFILE_SECTION_PAGYI . $param);
+                } catch (\Exception $e) {
+                    try {
+                        $params[$param] = $inyi->get($this::CONFIGFILE_SECTION_VIEWYI . $param);
+                    } catch (\Exception $e) {
+                        $params[$param] = '';
+                    }
+                }
+            }
+    
+            foreach ($params as $param => $value) {
+                if ($value !== '') {
+                    switch ($param) {
+                        case 'baseUrl':
+                            $this->setBaseUrl($value);
+                            break;
+                        case 'imagePath':
+                            $this->setImgPath($value);
+                            break;
+                        case 'imageDirectory':
+                            $this->setImgDir($value);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
     public function setBaseUrl($baseUrl): void
     {
-        $this->baseUrl = $this->pathyi->format($baseUrl, false, true);
+        if ($baseUrl !== null) {
+            $this->baseUrl = $this->pathyi->format($baseUrl, false, true);
+        }
     }
 
     public function setImgPath($imgPath): void
     {
-        $this->imgPath = $this->baseUrl . $this->pathyi->format($imgPath, false, true);
+        if ($imgPath !== null) {
+            $this->imgPath = $this->baseUrl . $this->pathyi->format($imgPath, false, true);
+        }
     }
 
     public function setImgDir($imgDir): void
     {
-        $this->imgDir = $this::ROOTDIR . $this->pathyi->format($imgDir, false, true);
+        if ($imgDir !== null) {
+            $this->imgDir = $this::ROOTDIR . $this->pathyi->format($imgDir, false, true);
+        }
     }
 
-    public function setConfigFilepath($configFilepath): void
+    public function setBuildConfigFilepath($buildConfigFilepath): void
     {
-        $this->configFilepath = $this::ROOTDIR . $this->pathyi->format($configFilepath);
+        $this->buildConfigFilepath = $this::ROOTDIR . $this->pathyi->format($buildConfigFilepath);
     }
 
     public function setTextDir($textDir): void
@@ -71,9 +117,9 @@ class Initializer
         return $this->imgDir;
     }
 
-    public function getConfigFilepath(): string
+    public function getBuildConfigFilepath(): string
     {
-        return $this->configFilepath;
+        return $this->buildConfigFilepath;
     }
 
     public function getTextDir(): string

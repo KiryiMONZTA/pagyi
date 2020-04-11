@@ -19,31 +19,31 @@ class Builder extends \Exception
     private ?Viewyi $viewyi = null;
     
     public function __construct(
-        string $configFilepath,
-        string $imgDir = null,
-        string $imgPath = null,
-        string $baseUrl = null
+        ?string $initConfigFilepath,
+        ?string $imgDir = null,
+        ?string $imgPath = null,
+        ?string $baseUrl = null
     ) {
         $this->initializer = Initializer::getInstance();
-        $this->initializer->setConfig($configFilepath);
+        $this->initializer->initByConfigFile($initConfigFilepath);
         $this->initializer->setBaseUrl($baseUrl);
         $this->initializer->setImgPath($imgPath);
         $this->initializer->setImgDir($imgDir);
 
         $this->viewyi = new Viewyi([
-            'baseUrl' => $baseUrl,
-            'imagePath' => $imgPath,
+            'baseUrl' => $this->initializer->getBaseUrl(),
+            'imagePath' => $this->initializer->getImgPath(),
             'templateDirectory' => $this::TEMPLATEDIR,
             'templateFileExtension' => $this::TEMPLATEFILEEXTENSION,
         ]);
     }
 
-    public function build(string $configFilepath, string $textDir): string
+    public function build(string $buildConfigFilepath, string $textDir): string
     {
         $this->initializer->setTextDir($textDir);
-        $this->initializer->setConfigFilepath($configFilepath);
+        $this->initializer->setBuildConfigFilepath($buildConfigFilepath);
 
-        $pageConfig = $this->readConfigFile($this->initializer->getConfigFilepath());
+        $pageConfig = $this->readBuildConfigFile($this->initializer->getBuildConfigFilepath());
         
         return $this->renderPage($pageConfig);
     }
@@ -71,7 +71,7 @@ class Builder extends \Exception
         return $this->viewyi->render($this::TEMPLATENAME_SECTION);
     }
 
-    private function readConfigFile(string $configFilepath): array
+    private function readBuildConfigFile(string $configFilepath): array
     {
         if (file_exists($configFilepath) === true) {
             if (null !== $pageConfig = json_decode(file_get_contents($configFilepath))) {
