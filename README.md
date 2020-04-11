@@ -7,207 +7,77 @@ composer require kiryi/pagyi
 ```
 
 ## Usage
-First initialize the engine in one of three possible ways. See [Initialization](#initialization) for more information. Then use the provided functions as described below. Also build your templates as described in the section [Templating](#templating).
+- Copy the [CSS rules](#css-rules) to your stylesheet
+- Create your page's [configuration](#configuration)
+- Initialize the builder in one of three possible ways ([more information](#initialization))
+- Run the [build function](#method-definition-build)
 
 ## Constructor Definition
 
 ```php
-__construct($config)
+    __construct(
+        ?string $initConfigFilepath,
+        ?string $imgDir = null,
+        ?string $imgPath = null,
+        ?string $baseUrl = null
+    )
 ```
 ### Parameters
-**config**  
-Optional configuration array or filepath to custom configuration INI file. If nothing is provided, default (*config/viewyi.ini*) is used ([more information](#initialization)). 
+**initConfigFilepath**  
+You can initialize your builder by passing a filepath to an INI file. If you don't want to use a file you can pass `null` and set the other parameters ([more information](#initialization)). 
 
-## Method Definition *assign*
+**imgDir**  
+The image directory relative to your project's root directory. Optional if you use an initialization file ([more information](#initialization)).  
+
+**imgPath**  
+The image path relative to your base URL. Optional if you use an initialization file ([more information](#initialization)).  
+
+**baseUrl**  
+The base URL of your web application. Optional if you use an initialization file ([more information](#initialization)).
+
+## Method Definition *build*
 ```php
-assign(string $key, $value): void
+build(string $buildConfigFilepath, string $textDir): string
 ```
-Assigns a variable to the view's data object.
 ### Parameters
-**key**  
-The variable's key.
+**buildConfigFilepath**  
+The JSON configuration filepath relative to your project's root directory.
 
-**key**  
-The variable's value. Can be string, any number, array, bool or null.
-
-## Method Definition *reset*
-```php
-reset(): void
-```
-Resets the view's data object. Usually this it not actually necessary, but can help sometimes if you are dealing with several render sections on one page.
-
-## Method Definition *render*
-```php
-render(string $template): string
-```
-Renders the current view (HTML page). Have to be called before `display`.
-### Parameters
-**template**  
-The template name to use as render base.
+**textDir**  
+The Markdown texts directory path relative to your project's root directory.
 
 ### Return Values
-Returns the fully rendered view.
-
-## Method Definition *display*
-```php
-display(string $headTemplate, string $title): void
-```
-Finally displays the whole HTML page. It is necessary to call `render` at least once before. The rendered view is always embeded to the page's HTML body element. `display` can only be called once.
-### Parameters
-**headTemplate**  
-The template name to embed into the HTML page's head element.
-
-**title**  
-The title of the current page set to the HTML page's title element.
+Returns the fully rendered HTML of your configured page.
 
 ## Initialization
-You have to provide the engine at least three mandatory parameters as well as an optional fourth.
+You have to provide the builder at least three mandatory parameters.
 
 **baseUrl**  
 The base URL of your web application.
 
 **imagePath**  
-The image directory path relative to your base URL.
+The image path relative to your base URL.
 
-**templateDirectory**  
-The template directory path relative to your project's root directory.
+**imageDirectory**  
+The image directory relative to your project's root directory.
 
-**templateFileExtension (optional)**  
-Optional file extension of your template files, if you want to use something else than the default `.php`.
-
-The parameters can be provided by using the standard configuration file `{PROJECTSROOTDIRECTORY}/config/viewyi.ini` with the following contents:
+The parameters can be provided by using a custom configuration file with the following contents:
 ```ini
-[viewyi]
+[pagyi]
 baseUrl = {YOURBASEURL}
-imagePath = {YOURIMAGEDIRECTORYPATH}
-templateDirectory = {YOURTEMPLATEDIRECTORYPATH}
-templateFileExtension = {YOURFILEEXTENSION}
+imagePath = {YOURIMAGEPATH}
+imageDirectory = {YOURIMAGEDIRECTORY}
 ```
-Or by passing another INI file path to the engines's constructor with the same contents. The path has to be relative to your project's root directory:
-```php
-$viewyi = new \Kiryi\Viewyi\Engine('{YOURCUSTOMFILEPATH}');
-```
-Or by passing an array with the three to four parameters to the constructor:
-```php
-$viewyi = new \Kiryi\Viewyi\Engine([
-    'baseUrl' => '{YOURBASEURL}',
-    'imagePath' => '{YOURIMAGEDIRECTORYPATH}',
-    'templateDirectory' => '{YOURTEMPLATEDIRECTORYPATH}',
-    'templateFileExtension' => '{YOURFILEEXTENSION}',
-]);
-```
+The filepath to the above INI file has then to be passed to the [constructor](#constructor-definition). If you already using Kiryi's VIEWYI view engine you probably set up two of the parameters in another INI file. In this case it is possible to add the third one `imageDirectory` to your [VIEWYI configuration file](https://github.com/KiryiMONZTA/viewyi#initialization) directly to the `[viewyi]` section and pass this one to the [constructor](#constructor-definition).
 
-## Templating
-- Use native PHP templates.
-- Therefore you may use any PHP alternative syntax control structure.
-- Print any data you have assigned by writing `<?=$d->{YOURVARIABLEKEY}?>`.
-- Build links with your base URL by writing `<a href='<?=$a>{YOURLINKRELATIVETOBASEURL}'>{LINKTEXT}<a>`.
-- Include images by writing `<img src='<?=$i?>{YOURIMAGEINYOURIMAGEDIRECTORY}' />`.
+If you don't want to use an INI file at all, just pass the needed parameters to the constructor and set the filepath `initConfigFilepath` to `null`.
 
-## Example
-*configuration/config.ini*
-```ini
-[viewyi]
-baseUrl = https://viewyi-example.com
-imagePath = img
-templateDirectory = src/View
-templateFileExtension = .tpl.php
-```
-*src/View/head.tpl.php*
-```html
-<link rel='stylesheet' href='<?=$a?>css/style.min.css' />
-<link rel='shortcut icon' href='<?=$i?>favicon.png' />
-
-```
-*src/View/home.tpl.php*
-```html
-<img src='<?=$i?>logo.png' />
-<h1><?=$d->headline?></h1>
-<?php foreach($d->paragraphs as $paragraph): ?>
-<p><?=$paragraph?></p>
-<?php endforeach; ?>
-
-```
-*src/Controller/HomeController.php*
-```php
-$viewyi = new \Kiryi\Viewyi\Engine('configuration/config.ini');
-$viewyi->assign('headline', 'Welcome To My Page');
-$viewyi->assign('paragraphs', [
-    'I want to show you the VIEWYI View Engine.',
-    'It is very easy to use.',
-    'Just follow this example.',
-]);
-$viewyi->render('home');
-$viewyi->display('head', 'Welcome');
-```
-will generate the HTML5 page:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-<link rel='stylesheet' href='https://viewyi-example.com/css/style.min.css' />
-<link rel='shortcut icon' href='https://viewyi-example.com/img/favicon.png' />
-<title>Welcome</title>
-</head>
-<body>
-<img src='https://viewyi-example.com/img/logo.png' />
-<h1>Welcome To My Page</h1>
-<p>I want to show you the VIEWYI View Engine.</p>
-<p>It is very easy to use.</p>
-<p>Just follow this example.</p>
-</body>
-</html>
-```
-
-
-
-
-
-
--OLD----------------------------------------
-
-## Usage
-- Set up the [View Engine](https://github.com/KiryiMONZTA/view-engine#configuration-parameters)
-- Copy the [CSS rules](#css-rules) to your project
-- Create a [JSON configuration](#json-configuration)
-- [Initialize](#initialization) the Page Builder
-- [Build](#building) the page
-
-### Initialization
-```php
-$buildController = new \Kiryi\PageBuilder\Controller\BuildController(string $configFile [, string $textDir = null, string $imgDir = null]);
-```
-
-#### Parameters
-**configFile**  
-JSON configuration filepath relative to your project's root directory.
-
-**textDir**  
-Optional Markdown texts directory path relative to your project's root directory, which overwrites the [global configuration](#global-directory-configuration).
-
-**imgDir**  
-Optional image directory path relative to your project's root directory, which overwrites the [global configuration](#global-directory-configuration).
-
-### Building
-```php
-build(): string
-```
-#### Return Values
-Returns the fully rendered page.
+You can also overwrite a single parameter by passing it to the constructor even if you set a configuration file.
 
 ### CSS Rules
-For a correct presentation of the page, copy the CSS rules from `{pageBuilder}/asset/css/pageBuilderStyle.css` to your project's CSS file or include the Page Builder's file into your web page.
+For a correct presentation of the page, copy the CSS rules from `{pagyi}/asset/css/pagyi.css` to your project's CSS file or include PAGYI's file into your web page.
 
-### Global Directory Configuration
-If you don't want to specify the text directory and/or your image directory at every initialization, you can set them globally in your project's `config.ini` file.
-```ini
-[page-builder]
-textDir = {yourTextDirectory}
-imgDir = {yourImageDirectory}
-```
-- Both parameters are relative to your project's root directory
-
-### JSON Configuration
+## JSON Configuration
 The page is build up from sections defined in a JSON configuration file.
 ```json
 [
@@ -219,7 +89,7 @@ The page is build up from sections defined in a JSON configuration file.
             "background": "#eee"
         },
         "text": "exampleTextFile",
-        "img": {
+        "image": {
             "file": "example.png",
             "altText": "Just an example picture"
         },
@@ -236,12 +106,12 @@ The page is build up from sections defined in a JSON configuration file.
 - `type` defines the [layout](#layout-types)
 - `color` consists of font color and background color
 - `text` is the name of the Markdown text file, which will be printed
-- `img` is the name including the file exentions of the [image](#images), which will be shown beside the text
+- `image` is the name including the file exentions of the [image](#images), which will be shown beside the text
 - `link` adds a button at the end of the text
 - All properties are optional.
 
 ### Layout Types
-- `type` tells the Page Builder which layout to use
+- `type` tells PAGYI which layout to use
 - default value is *normal*
 
 #### normal
@@ -272,7 +142,7 @@ The page is build up from sections defined in a JSON configuration file.
 |        |button|        |
 ```
 
-#### Parameter no-padding
+#### Parameter **no-padding**
 - The parameter `no-padding` could be added to the type `left` and `right`.
 - Normally the sections have some space between:
 ```
@@ -296,12 +166,12 @@ The page is build up from sections defined in a JSON configuration file.
 - Combined with good images, it's possible to create a chessboard-looking design.
 
 ### Images
-- `normal` and `center` layout could display images up to a width of 1400px.
-- `left` and `right` layout display a maximum width of 700px.
-- Best result with `left` and `right` is achieved with the maximum image width and a height, that is no less than the text height.
+- `normal` and `center` layout could display images up to a width of 1200px.
+- `left` and `right` layout display a maximum width of 600px.
+- Best result with `left` and `right` is achieved with the maximum image width and a height, that is no less than the text's height.
 - You may also add small icon-like images. It looks perfect with the type `center`.
 
-### Examples
+## Example
 Let's assume the following directory structure
 ```
 asset
@@ -323,7 +193,7 @@ Your `builderConfiguration.json` file looks like
         "id": "exampleSection01",
         "type": "left no-padding",
         "text": "exampleTextFile01",
-        "img": {
+        "image": {
             "file": "example01.png"
         }
     }
@@ -331,21 +201,29 @@ Your `builderConfiguration.json` file looks like
         "id": "exampleSection02",
         "type": "right no-padding",
         "text": "exampleTextFile02",
-        "img": {
+        "image": {
             "file": "example02.png"
         }
     }
 ]
 ```
-Then in your `index.php` initialize the Page Builder
+Then initialize the Page Builder
 ```php
-$buildController = new \Kiryi\PageBuilder\Controller\BuildController('asset/json/builderConfiguration.json', 'asset/text', 'public/img');
+$pagyi = new \Kiryi\Pagyi\Builder(
+    null,
+    'public/img',
+    'img',
+    'http://pagyi-test.com',
+);
 ```
-build the page
+and build the page
 ```php
-$page = $buildController->build();
+$page = $pagyi->build(
+    'asset/json/builderConfiguration.json',
+    'asset/text',
+);
 ```
-and print it
+You can now simply echo it
 ```php
 echo $page;
 ```
@@ -353,3 +231,11 @@ echo $page;
 - Both containing a text and an image
 - The first has the image on the right side
 - The second switches the order and shows the image on the left
+
+Even better is using Kiryi's VIEWYI to build a whole HTML5 web page
+```php
+$viewyi->assign('body', $page);
+$viewyi->render('home');
+$viewyi->display('head', 'PAGYI Test');
+```
+For more information about the VIEWYI set up and usage, please read [VIEWY's README](https://github.com/KiryiMONZTA/viewyi). Since PAGYI is using VIEWYI internally, it is a good choice to combine both.
