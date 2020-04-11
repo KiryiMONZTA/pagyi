@@ -1,0 +1,118 @@
+.pageBuilder * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.pageBuilder {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pageBuilder section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pageBuilder .content {
+    max-width: 1200px;
+    padding: 20px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.pageBuilder .center .content {
+    flex-direction: column-reverse;
+}
+@media (min-width: 720px) {
+    .pageBuilder .content {
+        padding: 40px;
+    }
+    .pageBuilder .left .content {
+        flex-direction: row;
+    }
+    .pageBuilder .right .content {
+        flex-direction: row-reverse;
+    }
+    .pageBuilder .left.no-padding .content,
+    .pageBuilder .right.no-padding .content {
+        padding: 0 40px;
+    }
+}
+
+.pageBuilder .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.pageBuilder .text h1,
+.pageBuilder .text h2,
+.pageBuilder .text h3 {
+    margin: 10px 0;
+    text-align: left;
+}
+.pageBuilder .text p {
+    margin: 10px 0;
+    text-align: justify;
+}
+.pageBuilder .center .text {
+    padding: 20px 0 0 0;
+    align-items: center;
+}
+.pageBuilder .center .text h1,
+.pageBuilder .center .text h2,
+.pageBuilder .center .text h3,
+.pageBuilder .center .text p {
+    text-align: center;
+}
+@media (min-width: 720px) {
+    .pageBuilder .left .text {
+        width: 50%;
+        padding: 0 20px 0 0;
+    }
+    .pageBuilder .right .text {
+        width: 50%;
+        padding: 0 0 0 20px;
+    }
+}
+
+.pageBuilder .button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    display: flex;
+    color: #263238;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid #263238;
+    border-radius: 5px;
+    transition: color 0.5s, background-color 0.5s;
+}
+.pageBuilder .button:hover,
+.pageBuilder .button:focus {
+    color: #fff;
+    background-color: #263238;
+}
+
+.pageBuilder .img {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+}
+.pageBuilder .img img {
+    max-width: 100%;
+    height: auto;
+    align-self: center;
+}
+@media (min-width: 720px) {
+    .pageBuilder .left .img,
+    .pageBuilder .right .img {
+        width: 50%;
+        margin: 0;
+    }
+}

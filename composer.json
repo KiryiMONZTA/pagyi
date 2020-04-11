@@ -1,0 +1,25 @@
+{
+    "name": "kiryi/pagyi",
+    "description": "Page builder using a JSON configuration file and Markdown texts",
+    "type": "library",
+    "homepage": "https://kiryi.net/",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Kiryi",
+            "email": "dev@kiryi.net"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "kiryi/pathyi": "^1.0",
+        "kiryi/inyi": "^1.0",
+        "kiryi/viewyi": "^1.1",
+        "erusev/parsedown": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kiryi\\Pagyi\\": "src/"
+        }
+    }
+}
