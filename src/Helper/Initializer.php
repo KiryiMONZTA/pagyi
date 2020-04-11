@@ -18,7 +18,7 @@ class Initializer
     private string $buildConfigFilepath = '';
     private string $textDir = '';
 
-    private static $instance = null;
+    private static ?Initializer $instance = null;
     private ?Pathyi $pathyi = null;
 
     private function __construct()
@@ -26,7 +26,7 @@ class Initializer
         $this->pathyi = new Pathyi();
     }
 
-    public static function getInstance()
+    public static function getInstance(): Initializer
     {
         if (self::$instance === null) {
             self::$instance = new Initializer();
