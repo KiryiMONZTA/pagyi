@@ -18,9 +18,14 @@ class Builder extends \Exception
     private ?Initializer $initializer = null;
     private ?Viewyi $viewyi = null;
     
-    public function __construct(string $baseUrl, string $imgPath, string $imgDir)
-    {
+    public function __construct(
+        string $configFilepath,
+        string $imgDir = null,
+        string $imgPath = null,
+        string $baseUrl = null
+    ) {
         $this->initializer = Initializer::getInstance();
+        $this->initializer->setConfig($configFilepath);
         $this->initializer->setBaseUrl($baseUrl);
         $this->initializer->setImgPath($imgPath);
         $this->initializer->setImgDir($imgDir);
