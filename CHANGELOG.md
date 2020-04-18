@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [1.0.0] - 2020-04-11
 ### Added
 - `Builder` builds and renders the web page.
 - `Initializer` sets and holds some configuration parameters.
@@ -20,3 +18,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `page.tpl` defines the container element all sections lay in.
 - `section.tpl` defines the section's buildup.
 - `pagyi.css` defines the layout and design.
+
+## [1.0.0] - YYYY-MM-DD [tba]
