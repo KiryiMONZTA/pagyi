@@ -70,9 +70,9 @@ imageDirectory = {YOURIMAGEDIRECTORY}
 ```
 The filepath to the above INI file has then to be passed to the [constructor](#constructor-definition). If you already using Kiryi's VIEWYI view engine you probably set up two of the parameters in another INI file. In this case it is possible to add the third one `imageDirectory` to your [VIEWYI configuration file](https://github.com/KiryiMONZTA/viewyi#initialization) directly to the `[viewyi]` section and pass this already existing file to the [constructor](#constructor-definition).
 
-If you set up the configuration file, you can call the Builder without any parameters:
+If you have set up the configuration file, you have to provide the path to the constructor:
 ```php
-$pagyi = new \Kiryi\Pagyi\Builder();
+$pagyi = new \Kiryi\Pagyi\Builder({YOURFILEPATH});
 ```
 
 If you don't want to use an INI file at all, just pass the needed parameters to the constructor and set the filepath `initConfigFilepath` to `null`.
