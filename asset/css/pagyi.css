@@ -68,6 +68,13 @@
     margin: 10px 0;
     text-align: justify;
 }
+.pageBuilder .text ul {
+    margin: 10px 40px;
+    text-align: justify;
+}
+.pageBuilder .text li {
+    margin: 10px 0;
+}
 .pageBuilder .center .text {
     padding: 20px 10px 0 10px;
     align-items: center;
