@@ -64,6 +64,11 @@
     margin: 10px 0;
     text-align: left;
 }
+.pageBuilder .text p+h1,
+.pageBuilder .text p+h2,
+.pageBuilder .text p+h3 {
+    margin: 30px 0 10px 0;
+}
 .pageBuilder .text p {
     margin: 10px 0;
     text-align: justify;
