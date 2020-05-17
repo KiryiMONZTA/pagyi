@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2020-05-17
+### Added
+- `pagyi.css` ol styles.
+
+### Changed
+- `pagyi.css` text-align on lists to left.
+
 ## [1.0.1] - 2020-04-26
 ### Added
 - `pagyi.css` ul styles and margin to headlines after paragraphs.
