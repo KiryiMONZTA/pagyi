@@ -73,7 +73,8 @@
     margin: 10px 0;
     text-align: justify;
 }
-.pageBuilder .text ul {
+.pageBuilder .text ul,
+.pageBuilder .text ol{
     margin: 10px 40px;
 }
 .pageBuilder .text li {
